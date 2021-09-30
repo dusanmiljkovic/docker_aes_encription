@@ -1,0 +1,13 @@
+version: '1.0'  
+  
+services:  
+  master:  
+    image: ${DOCKER_REGISTRY-}master  
+    container_name: master  
+    build:  
+      context: .  
+      dockerfile: Dockerfile  
+networks:  
+    default:  
+        external:  
+            name:  aesCtrNetwork  

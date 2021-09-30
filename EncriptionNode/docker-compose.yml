@@ -1,0 +1,13 @@
+version: '1.0'  
+  
+services:  
+  serviceone:  
+    image: ${DOCKER_REGISTRY-}serviceone  
+    container_name: serviceone  
+    build:  
+      context: .  
+      dockerfile: Dockerfile  
+networks:  
+    default:  
+        external:  
+            name:  aesCtrNetwork  
