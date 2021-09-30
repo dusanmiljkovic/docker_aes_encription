@@ -12,6 +12,8 @@ namespace EncriptionNode.Controllers
         [HttpGet]
         public string Encrypt(string plaintext)
         {
+            if (String.IsNullOrEmpty(plaintext))
+                return "";
             Console.WriteLine($"data: {plaintext}");
             string returnResult = "";
 

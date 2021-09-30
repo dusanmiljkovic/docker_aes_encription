@@ -18,7 +18,7 @@ namespace EncriptionNode.AES_CTR
 
             _aes = new AesManaged
             {
-                Mode = CipherMode.ECB,
+                Mode = CipherMode.CBC,
                 Padding = PaddingMode.None
             };
 

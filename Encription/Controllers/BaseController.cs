@@ -47,24 +47,27 @@ namespace Encription.Controllers
 
             for (int i=0; i < numberOfServices; i++) 
             {
-                try 
+                if (splitedPlainText[i] != "")
                 {
-                    using var client = new HttpClient  
+                    try 
+                    {
+                        using var client = new HttpClient  
+                        {  
+                            BaseAddress = new Uri($"http://{services[i]}/")  
+                        };  
+                
+                        var response = client.GetAsync($"?plaintext={splitedPlainText[i]}").Result;  
+                        if (response.IsSuccessStatusCode)  
+                        {  
+                            var jsonTask = response.Content.ReadAsStringAsync();  
+                            jsonTask.Wait();  
+                            data += jsonTask.Result;
+                        }  
+                    }
+                    catch (Exception ex)  
                     {  
-                        BaseAddress = new Uri($"http://{services[i]}/")  
-                    };  
-            
-                    var response = client.GetAsync($"?plaintext={splitedPlainText[i]}").Result;  
-                    if (response.IsSuccessStatusCode)  
-                    {  
-                        var jsonTask = response.Content.ReadAsStringAsync();  
-                        jsonTask.Wait();  
-                        data += jsonTask.Result;
-                    }  
-                }
-                catch (Exception ex)  
-                {  
-                        Console.WriteLine(ex.Message);  
+                            Console.WriteLine(ex.Message);  
+                    }
                 }
             }
 
