@@ -55,8 +55,8 @@ namespace Encription.Controllers
                         {  
                             BaseAddress = new Uri($"http://{services[i]}/")  
                         };  
-                
-                        var response = client.GetAsync($"?plaintext={splitedPlainText[i]}").Result;  
+                        var response = client.GetAsync($"?plaintext={splitedPlainText[i]}&receivedIv={iv}").Result;  
+
                         if (response.IsSuccessStatusCode)  
                         {  
                             var jsonTask = response.Content.ReadAsStringAsync();  

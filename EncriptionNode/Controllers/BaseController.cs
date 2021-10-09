@@ -9,29 +9,37 @@ namespace EncriptionNode.Controllers
     [Route("")]
     public class BaseController : ControllerBase
     {
+        byte[] keyBytes = GetByteArray("2b7e151628aed2a6abf7158809cf4f3c");
+        byte[] iv;
+
         [HttpGet]
-        public string Encrypt(string plaintext)
+        public string Encrypt(string plaintext, int receivedIv)
         {
+            string fmt = "00000000000000000000000000000000";
+            iv = GetByteArray(receivedIv.ToString("X32"));
+            Console.WriteLine(iv);
+
             if (String.IsNullOrEmpty(plaintext))
                 return "";
             Console.WriteLine($"data: {plaintext}");
             string returnResult = "";
 
-            var keyBytes = GetByteArray("2b7e151628aed2a6abf7158809cf4f3c");
-            var iv = GetByteArray("f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff");
-
             using (var am = new Aes128CounterMode(iv))
             {
                 try
                 {
-                    var inputBytes = Encoding.ASCII.GetBytes(plaintext);
-                    var result = new byte[inputBytes.Length];
-                    using (var ict = am.CreateEncryptor(keyBytes, null))
+                    for (int i = 0; i < plaintext.Length; i++) 
                     {
-                        ict.TransformBlock(inputBytes, 0, inputBytes.Length, result, 0);
+                        var inputBytes = Encoding.ASCII.GetBytes(new char[]{ plaintext[i] });
+                        var result = new byte[inputBytes.Length];
+                        using (var ict = am.CreateEncryptor(keyBytes, null))
+                        {
+                            ict.TransformBlock(inputBytes, 0, inputBytes.Length, result, 0);
+                        }
+                        returnResult += GetHexString(result);
+                        Console.WriteLine("Encrypted:   {0}", returnResult);
                     }
-                    returnResult = GetHexString(result);
-                    Console.WriteLine("Encrypted:   {0}", returnResult);
+                    
                 }
                 catch (Exception ex) 
                 {
