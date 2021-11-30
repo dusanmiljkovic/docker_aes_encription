@@ -12,16 +12,17 @@ namespace EncriptionNode.Controllers
         byte[] keyBytes = GetByteArray("2b7e151628aed2a6abf7158809cf4f3c");
         byte[] iv;
 
+        // Nodovi ne ispisuju nista kad se pozove poziv za enkriptovanje (osim ako dodje do greske) ako zelis nesto da prikazu mozes da 
+        // sklonis neki od postojecih komentara ili da dodas sta ti hoces da ti se ispisuje
         [HttpGet]
         public string Encrypt(string plaintext, int receivedIv)
         {
-            string fmt = "00000000000000000000000000000000";
             iv = GetByteArray(receivedIv.ToString("X32"));
-            Console.WriteLine(iv);
+            // Console.WriteLine(iv); - ovde mozes videti IV kako izgleda 
 
             if (String.IsNullOrEmpty(plaintext))
                 return "";
-            Console.WriteLine($"data: {plaintext}");
+            // Console.WriteLine($"data: {plaintext}"); - ispisuje primljenu porukus
             string returnResult = "";
 
             using (var am = new Aes128CounterMode(iv))
@@ -37,9 +38,8 @@ namespace EncriptionNode.Controllers
                             ict.TransformBlock(inputBytes, 0, inputBytes.Length, result, 0);
                         }
                         returnResult += GetHexString(result);
-                        Console.WriteLine("Encrypted:   {0}", returnResult);
+                        // Console.WriteLine("Encrypted:   {0}", returnResult); - ispisuje enkriptovanu poruku
                     }
-                    
                 }
                 catch (Exception ex) 
                 {
